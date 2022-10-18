@@ -3,13 +3,13 @@
 
 #include <memory>
 
-UINT USARTThread( LPVOID lpData )
+UINT UARTThread( LPVOID lpData )
 {
-	char buf[ USART::MaxBufferSize ] ;
+	char buf[ UART::MaxBufferSize ] ;
 
-	USART * usart = ( USART * ) lpData ;
+	UART * uart = ( UART * ) lpData ;
 
-	while( usart->IsOpen() )
+	while( uart->IsOpen() )
 	{
 		DWORD      eventMask = 0 ;
 		DWORD      length = 0 ;
@@ -18,33 +18,33 @@ UINT USARTThread( LPVOID lpData )
 
 		int inSize = 0 ;
 
-		memset( buf , '\0' , USART::MaxBufferSize ) ;
+		memset( buf , '\0' , UART::MaxBufferSize ) ;
 
-		WaitCommEvent( usart->GetHandle() , &eventMask , &( usart->readOverlapped ) ) ;
-		ClearCommError( usart->GetHandle() , &errors , &status ) ;
+		WaitCommEvent( uart->GetHandle() , &eventMask , &( uart->readOverlapped ) ) ;
+		ClearCommError( uart->GetHandle() , &errors , &status ) ;
 
 		if( ( eventMask & EV_RXCHAR ) && status.cbInQue )
 		{
 			int size = status.cbInQue ;
-			if( status.cbInQue > USART::MaxBufferSize )
+			if( status.cbInQue > UART::MaxBufferSize )
 			{
-				size = USART::MaxBufferSize ;
+				size = UART::MaxBufferSize ;
 			}
 
 			do
 			{
-				ClearCommError( usart->GetHandle() , &errors , &status ) ;
+				ClearCommError( uart->GetHandle() , &errors , &status ) ;
 
-				if( !ReadFile( usart->GetHandle() , 
-					buf + inSize , size , &length , &( usart->GetReadOverlapped() ) ) )
+				if( !ReadFile( uart->GetHandle() , 
+					buf + inSize , size , &length , &( uart->GetReadOverlapped() ) ) )
 				{
 					TRACE( " ERROR IN ReadFile() \n " ) ;
 					if( ERROR_IO_PENDING == GetLastError() )
 					{
-						if( WAIT_OBJECT_0 == WaitForSingleObject( usart->GetReadOverlapped().hEvent , 1000 ) )
+						if( WAIT_OBJECT_0 == WaitForSingleObject( uart->GetReadOverlapped().hEvent , 1000 ) )
 						{
 							GetOverlappedResult( 
-								usart->GetHandle() , &( usart->GetReadOverlapped() ) , &length , FALSE ) ;
+								uart->GetHandle() , &( uart->GetReadOverlapped() ) , &length , FALSE ) ;
 						}
 						else
 						{
@@ -61,30 +61,30 @@ UINT USARTThread( LPVOID lpData )
 
 			} while( ( 0 != length ) && ( inSize < size ) ) ;
 
-			ClearCommError( usart->GetHandle() , &errors , &status ) ;
+			ClearCommError( uart->GetHandle() , &errors , &status ) ;
 
-			if( usart->GetLength() + inSize > USART::MaxBufferSize )
+			if( uart->GetLength() + inSize > UART::MaxBufferSize )
 			{
-				inSize = ( usart->GetLength() + inSize ) - USART::MaxBufferSize ;
+				inSize = ( uart->GetLength() + inSize ) - UART::MaxBufferSize ;
 			}
 
-			usart->GetEvent()->ResetEvent() ;
-			memcpy( usart->recvBuf + usart->GetLength() , buf , inSize ) ;
-			usart->SetLength( usart->GetLength() + inSize ) ;
-			usart->GetEvent()->SetEvent() ;
+			uart->GetEvent()->ResetEvent() ;
+			memcpy( uart->recvBuf + uart->GetLength() , buf , inSize ) ;
+			uart->SetLength( uart->GetLength() + inSize ) ;
+			uart->GetEvent()->SetEvent() ;
 
-			SendMessage( usart->GetHwnd() , WM_USART_RECEIVE , usart->GetLength() , ( LPARAM ) usart ) ;
+			SendMessage( uart->GetHwnd() , WM_UART_RECEIVE , uart->GetLength() , ( LPARAM ) uart ) ;
 		}
 	}
 
-	PurgeComm( usart->GetHandle() , PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
+	PurgeComm( uart->GetHandle() , PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
 
-	SendMessage( usart->GetHwnd() , WM_USART_CLOSE , 0 , ( LPARAM ) usart ) ;
+	SendMessage( uart->GetHwnd() , WM_UART_CLOSE , 0 , ( LPARAM ) uart ) ;
 
 	return 0 ;
 }
 
-USART::USART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit )
+UART::UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit )
 {
 	this->port = port ;
 	this->baud = baud ;
@@ -106,7 +106,7 @@ USART::USART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT
 }
 
 
-USART::~USART()
+UART::~UART()
 {
 	if( true == isOpen )
 	{
@@ -119,7 +119,7 @@ USART::~USART()
 }
 
 
-void USART::SetBaudRateMap()
+void UART::SetBaudRateMap()
 {
 	baudRateMap.emplace( std::pair< std::string , std::int32_t >(       "300" , CBR_300    ) ) ;
 	baudRateMap.emplace( std::pair< std::string , std::int32_t >(       "600" , CBR_600    ) ) ;
@@ -145,7 +145,7 @@ void USART::SetBaudRateMap()
 }
 
 
-void USART::Close()
+void UART::Close()
 {
 	if( false == isOpen )
 	{
@@ -161,7 +161,7 @@ void USART::Close()
 	Sleep( 500 ) ;
 }
 
-void USART::CloseHandle()
+void UART::CloseHandle()
 {
 	::CloseHandle( handle ) ;
 	::CloseHandle( readOverlapped.hEvent  ) ;
@@ -169,20 +169,20 @@ void USART::CloseHandle()
 }
 
 
-void USART::Clear()
+void UART::Clear()
 {
 	PurgeComm( handle , PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
 	memset( recvBuf , 0 , MaxBufferSize ) ;
 }
 
 
-BOOL USART::Create( HWND hwnd )
+BOOL UART::Create( HWND hwnd )
 {
 	this->hwnd = hwnd ; // for message
 
 	CString czPort( port.c_str() ) ;
 
-	// open usart
+	// open uart
 	handle = CreateFile(
 		czPort , GENERIC_READ | GENERIC_WRITE , 0 , NULL , OPEN_EXISTING , 
 		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED , NULL ) ;
@@ -207,7 +207,7 @@ BOOL USART::Create( HWND hwnd )
 	readOverlapped.hEvent  = CreateEvent( NULL , TRUE , FALSE , NULL ) ;
 	writeOverlapped.hEvent = CreateEvent( NULL , TRUE , FALSE , NULL ) ;
 
-	AfxBeginThread( USARTThread , ( LPVOID ) this ) ;
+	AfxBeginThread( UARTThread , ( LPVOID ) this ) ;
 
 	EscapeCommFunction( handle , SETDTR ) ;
 
@@ -215,7 +215,7 @@ BOOL USART::Create( HWND hwnd )
 }
 
 
-void USART::Reset()
+void UART::Reset()
 {
 	if( false == isOpen )
 	{
@@ -245,7 +245,7 @@ void USART::Reset()
 	timeOuts.WriteTotalTimeoutConstant   = 1000 ;
 	timeOuts.WriteTotalTimeoutMultiplier =    0 ;
 
-	ClearCommError( handle , &error , NULL ) ;             // reset all errors on USART Ports
+	ClearCommError( handle , &error , NULL ) ;             // reset all errors on UART Ports
 	SetupComm( handle , RxBufferSize , TxBufferSize ) ;    // set buffer size
 	PurgeComm( handle , PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR ) ; // No permit Rx/Tx and bottom buffer up
 	SetCommTimeouts( handle , &timeOuts ) ;
@@ -279,7 +279,7 @@ void USART::Reset()
 }
 
 
-bool USART::Send( char * pBuf , int32_t length )
+bool UART::Send( char * pBuf , int32_t length )
 {
 	bool retVal = true ;
 
@@ -314,7 +314,7 @@ bool USART::Send( char * pBuf , int32_t length )
 }
 
 
-int32_t USART::Receive( char * pBuf , int32_t length )
+int32_t UART::Receive( char * pBuf , int32_t length )
 {
 	CSingleLock lockObj( ( CSyncObject * ) pEvent , FALSE ) ;
 
@@ -356,49 +356,49 @@ int32_t USART::Receive( char * pBuf , int32_t length )
 }
 
 
-bool USART::IsOpen()
+bool UART::IsOpen()
 {
 	return isOpen ;
 }
 
 
-HANDLE & USART::GetHandle()
+HANDLE & UART::GetHandle()
 {
 	return handle ;
 }
 
 
-HWND & USART::GetHwnd()
+HWND & UART::GetHwnd()
 {
 	return hwnd ;
 }
 
 
-OVERLAPPED & USART::GetReadOverlapped()
+OVERLAPPED & UART::GetReadOverlapped()
 {
 	return readOverlapped ;
 }
 
 
-int32_t USART::GetLength()
+int32_t UART::GetLength()
 {
 	return length ;
 }
 
 
-void USART::SetLength( int32_t length )
+void UART::SetLength( int32_t length )
 {
 	this->length = length ;
 }
 
 
-CEvent *& USART::GetEvent()
+CEvent *& UART::GetEvent()
 {
 	return pEvent ;
 }
 
 /*
-char *& USART::GetRecvBuf()
+char *& UART::GetRecvBuf()
 {
 	return recvBuf ;
 }

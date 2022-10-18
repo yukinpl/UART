@@ -15,11 +15,11 @@ constexpr typename std::underlying_type<E>::type ToUnderlying( E e ) noexcept
 	return static_cast< typename std::underlying_type< E >::type >( e ) ;
 }
 
-#define WM_USART_RECEIVE ( WM_USER + 1 ) 
-#define WM_USART_CLOSE   ( WM_USER + 2 ) 
+#define WM_UART_RECEIVE ( WM_USER + 1 ) 
+#define WM_UART_CLOSE   ( WM_USER + 2 ) 
 
 
-class USART : public CCmdTarget
+class UART : public CCmdTarget
 {
 
 public:
@@ -57,8 +57,8 @@ private:
 	void SetBaudRateMap() ;
 
 public:
-	 USART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit ) ;
-	~USART() ;
+	 UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit ) ;
+	~UART() ;
 
 public:
 	void Close() ;

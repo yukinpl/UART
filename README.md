@@ -8,7 +8,7 @@ END_MESSAGE_MAP()
 ```
 
 ```cpp
-LRESULT CUartDlg::OnUartThreadClose( WPARAM legnth , LPARAM lparam )
+LRESULT CUartDlg::OnUartThreadClose( WPARAM length , LPARAM lparam )
 {
 	( ( UART * ) lparam )->CloseHandle() ;
 

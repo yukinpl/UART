@@ -3,7 +3,7 @@ UART on Windows 10. Written by C++
     
 ```cpp
 BEGIN_MESSAGE_MAP( CUartDlg , CDialogEx )
-	ON_MESSAGE( WM_UART_RECEIVE , CUartDlg::OnUartReceive ):/
+	ON_MESSAGE( WM_UART_RECEIVE , CUartDlg::OnUartReceive )
 	ON_MESSAGE( WM_UART_CLOSE , CUartDlg::OnUartThreadClose )
 END_MESSAGE_MAP()
 ```

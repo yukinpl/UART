@@ -22,6 +22,8 @@ LRESULT CUartDlg::OnUartThreadClose( WPARAM len , LPARAM uart )
 ```cpp
 LRESULT CUartDlg::OnUartReceive( WPARAM len , LPARAM uart )
 {
+	static std::string stacked = "" ;
+	
 	UART * p = ( ( UART * ) uart ) ;
 	uint32_t length = ( uint32_t ) len ;
 	
@@ -35,6 +37,9 @@ LRESULT CUartDlg::OnUartReceive( WPARAM len , LPARAM uart )
 	p->Receive( data , length ) ;
 	data[ length ] = '\0' ;
 	
+	stacked.append( data , length ) ;
+	
+	...
 	...
 	
 	return 0 ;

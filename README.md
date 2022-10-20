@@ -23,6 +23,19 @@ LRESULT CUartDlg::OnUartThreadClose( WPARAM len , LPARAM uart )
 LRESULT CUartDlg::OnUartReceive( WPARAM len , LPARAM uart )
 {
 	UART * p = ( ( UART * ) uart ) ;
+	uint32_t length = ( uint32_t ) len ;
+	
+	char data[ UART::MaxBufferSize ] = '\0' ;
+	
+	if( nullptr == p )
+	{
+		return 0 ;
+	}
+	
+	p->Receive( data , length ) ;
+	data[ length ] = '\0' ;
+	
+	...
 	
 	return 0 ;
 }

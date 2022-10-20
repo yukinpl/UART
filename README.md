@@ -25,7 +25,7 @@ LRESULT CUartDlg::OnUartReceive( WPARAM len , LPARAM uart )
 	UART * p = ( ( UART * ) uart ) ;
 	uint32_t length = ( uint32_t ) len ;
 	
-	char data[ UART::MaxBufferSize ] = '\0' ;
+	char data[ UART::MaxBufferSize ] = "\0" ;
 	
 	if( nullptr == p )
 	{

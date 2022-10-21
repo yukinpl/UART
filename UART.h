@@ -63,7 +63,7 @@ public:
 public:
 	void Close() ;
 	void CloseHandle() ;
-	BOOL Create( HWND hwnd ) ;
+	bool Create( HWND hwnd ) ;
 
 	bool IsOpen() ;
 	void Reset() ;
@@ -81,7 +81,7 @@ public:
 
 	//char *& GetRecvBuf() ;
 
-	bool Send( char * pBuf , int32_t length ) ;
+	bool Send( uint8_t * pBuf , int32_t length ) ;
 	int32_t Receive( char * pBuf , int32_t length ) ;
 	
 } ;

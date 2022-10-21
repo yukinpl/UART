@@ -176,7 +176,7 @@ void UART::Clear()
 }
 
 
-BOOL UART::Create( HWND hwnd )
+bool UART::Create( HWND hwnd )
 {
 	this->hwnd = hwnd ; // for message
 
@@ -191,7 +191,7 @@ BOOL UART::Create( HWND hwnd )
 	if( INVALID_HANDLE_VALUE == handle )
 	{
 		isOpen = false ;
-		return FALSE ;
+		return false ;
 	}
 
 	Reset() ;
@@ -211,7 +211,7 @@ BOOL UART::Create( HWND hwnd )
 
 	EscapeCommFunction( handle , SETDTR ) ;
 
-	return TRUE ;
+	return true ;
 }
 
 
@@ -279,7 +279,7 @@ void UART::Reset()
 }
 
 
-bool UART::Send( char * pBuf , int32_t length )
+bool UART::Send( uint8_t * pBuf , int32_t length )
 {
 	bool retVal = true ;
 

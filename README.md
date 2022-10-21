@@ -48,6 +48,12 @@ LRESULT CUartDlg::OnUartReceive( WPARAM len , LPARAM uart )
      
 ```cpp
 m_pUART = new UART( "COM3" , "115200" , PARITY_BIT::None , DATA_BIT::BIT_8 , STOP_BIT::BIT_1 ) ;
+if( true == m_pUART->Create( GetSafeHwd() ) )
+{
+}
+else
+{
+}
 ```
     
 ```cpp

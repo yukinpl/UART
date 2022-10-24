@@ -3,6 +3,7 @@
 
 #include <memory>
 
+
 UINT UARTThread( LPVOID lpData )
 {
 	char buf[ UART::MaxBufferSize ] ;
@@ -23,7 +24,7 @@ UINT UARTThread( LPVOID lpData )
 		WaitCommEvent( uart->GetHandle() , &eventMask , &( uart->readOverlapped ) ) ;
 		ClearCommError( uart->GetHandle() , &errors , &status ) ;
 
-		if( ( eventMask & EV_RXCHAR ) && status.cbInQue )
+		if( /* eventMask & EV_RXCHAR &&*/ status.cbInQue )
 		{
 			int size = status.cbInQue ;
 			if( status.cbInQue > UART::MaxBufferSize )
@@ -83,6 +84,7 @@ UINT UARTThread( LPVOID lpData )
 
 	return 0 ;
 }
+
 
 UART::UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit )
 {
@@ -160,6 +162,7 @@ void UART::Close()
 
 	Sleep( 500 ) ;
 }
+
 
 void UART::CloseHandle()
 {

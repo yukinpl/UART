@@ -6,7 +6,7 @@
 
 UINT UARTThread( LPVOID lpData )
 {
-	char buf[ UART::MaxBufferSize ] ;
+	uint8_t buf[ UART::MaxBufferSize ] ;
 
 	UART * uart = ( UART * ) lpData ;
 

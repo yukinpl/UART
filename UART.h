@@ -41,7 +41,7 @@ private:
 public:
 	bool isOpen ;
 
-	char recvBuf[ MaxBufferSize ] ;
+	uint8_t recvBuf[ MaxBufferSize ] ;
 
 	CEvent * pEvent ;
 

@@ -317,7 +317,7 @@ bool UART::Send( uint8_t * pBuf , int32_t length )
 }
 
 
-int32_t UART::Receive( char * pBuf , int32_t length )
+int32_t UART::Receive( uint8_t * pBuf , int32_t length )
 {
 	CSingleLock lockObj( ( CSyncObject * ) pEvent , FALSE ) ;
 

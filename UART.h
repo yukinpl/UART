@@ -82,7 +82,7 @@ public:
 	//char *& GetRecvBuf() ;
 
 	bool Send( uint8_t * pBuf , int32_t length ) ;
-	int32_t Receive( char * pBuf , int32_t length ) ;
+	int32_t Receive( uint8_t * pBuf , int32_t length ) ;
 	
 } ;
 

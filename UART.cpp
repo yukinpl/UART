@@ -91,11 +91,11 @@ UART::UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT d
 	this->port = port ;
 	this->baud = baud ;
 
-	this->parity = parity ;
+	this->parity  = parity  ;
 	this->databit = databit ;
 	this->stopbit = stopbit ;
 
-	this->length = 0 ;
+	this->length    = 0 ;
 	this->flowCheck = 0 ;
 
 	this->isOpen = false ;

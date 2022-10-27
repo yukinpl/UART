@@ -86,21 +86,11 @@ UINT UARTThread( LPVOID lpData )
 }
 
 
-UART::UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit )
+UART::UART( std::string _port , std::string _baud , PARITY_BIT _parity , DATA_BIT _databit , STOP_BIT _stopbit , bool _isUsedSharedPtr )
+	: port( _port ) , baud( _baud ) , parity( _parity ) , databit( _databit ) , stopbit( _stopbit ) , isUsedSharedPtr( _isUsedSharedPtr ) ,
+	length( 0 ) , flowCheck( 0 ) , isOpen( false ) 
 {
-	this->port = port ;
-	this->baud = baud ;
-
-	this->parity  = parity  ;
-	this->databit = databit ;
-	this->stopbit = stopbit ;
-
-	this->length    = 0 ;
-	this->flowCheck = 0 ;
-
-	this->isOpen = false ;
-
-	this->pEvent = new CEvent( FALSE , TRUE ) ;
+	pEvent = new CEvent( FALSE , TRUE ) ;
 
 	memset( this->recvBuf , 0 , MaxBufferSize ) ;
 
@@ -118,6 +108,8 @@ UART::~UART()
 	baudRateMap.clear() ;
 
 	delete pEvent ;
+
+	CloseHandle() ;
 }
 
 
@@ -395,14 +387,19 @@ void UART::SetLength( int32_t length )
 }
 
 
-CEvent *& UART::GetEvent()
+CEvent * & UART::GetEvent()
 {
 	return pEvent ;
 }
 
-/*
-char *& UART::GetRecvBuf()
+
+std::string const & UART::GetPort() const
 {
-	return recvBuf ;
+	return port ;
 }
-*/
+
+
+bool const & UART::IsUsedSharedPtr()
+{
+	return isUsedSharedPtr ;
+}

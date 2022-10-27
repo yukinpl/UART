@@ -22,12 +22,12 @@ constexpr typename std::underlying_type<E>::type ToUnderlying( E e ) noexcept
 class UART : public CCmdTarget
 {
 
-public:
+public :
 	static const int RxBufferSize  = 8192 ;
 	static const int TxBufferSize  = 8182 ;
 	static const int MaxBufferSize = 8192 ;
 
-private: 
+private : 
 	std::string port ;
 	std::string baud ;
 
@@ -37,6 +37,9 @@ private:
 
 	int32_t length ;
 	bool    flowCheck ;
+
+private :
+	bool isUsedSharedPtr = false ;
 
 public:
 	bool isOpen ;
@@ -57,7 +60,7 @@ private:
 	void SetBaudRateMap() ;
 
 public:
-	 UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit ) ;
+	 UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit , bool isUsedSharedPtr = false ) ;
 	~UART() ;
 
 public:
@@ -79,10 +82,11 @@ public:
 
 	CEvent * & GetEvent() ;
 
-	//char *& GetRecvBuf() ;
-
 	bool Send( uint8_t * pBuf , int32_t length ) ;
 	int32_t Receive( uint8_t * pBuf , int32_t length ) ;
 	
+	std::string const & GetPort() const ;
+
+	bool const & IsUsedSharedPtr() ;
 } ;
 

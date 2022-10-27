@@ -38,9 +38,6 @@ private :
 	int32_t length ;
 	bool    flowCheck ;
 
-private :
-	bool isUsedSharedPtr = false ;
-
 public:
 	bool isOpen ;
 
@@ -60,7 +57,7 @@ private:
 	void SetBaudRateMap() ;
 
 public:
-	 UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit , bool isUsedSharedPtr = false ) ;
+	 UART( std::string port , std::string baud , PARITY_BIT parity , DATA_BIT databit , STOP_BIT stopbit ) ;
 	~UART() ;
 
 public:
@@ -86,7 +83,5 @@ public:
 	int32_t Receive( uint8_t * pBuf , int32_t length ) ;
 	
 	std::string const & GetPort() const ;
-
-	bool const & IsUsedSharedPtr() ;
 } ;
 

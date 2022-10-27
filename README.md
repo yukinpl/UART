@@ -11,12 +11,12 @@ END_MESSAGE_MAP()
 ```cpp
 LRESULT CUartDlg::OnUartThreadClose( WPARAM len , LPARAM uart )
 {
-	( ( UART * ) uart )->CloseHandle() ;
-
-	delete ( UART * ) uart ;
+	if( !( ( UART * ) uart )->IsUsedSharedPtr() )
+	{
+		delete ( UART * ) uart ;
+	}
 
 	return 0 ;
-}
 ```
 
 ```cpp

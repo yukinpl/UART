@@ -80,7 +80,7 @@ UINT UARTThread( LPVOID lpData )
 
 	PurgeComm( uart->GetHandle() , PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
 
-	SendMessage( uart->GetHwnd() , WM_UART_CLOSE , 0 , ( LPARAM ) uart ) ;
+	SendMessage( uart->GetHwnd() , WM_UART_CLOSE , uart->GetUniqueId() , ( LPARAM ) uart) ;
 
 	return 0 ;
 }
@@ -107,6 +107,12 @@ UART::~UART()
 	baudRateMap.clear() ;
 
 	delete pEvent ;
+}
+
+
+int32_t const & UART::GetUniqueId() const
+{
+	return uniqueId ;
 }
 
 
@@ -168,7 +174,7 @@ void UART::Clear()
 }
 
 
-bool UART::Create( HWND hwnd )
+bool UART::Create( HWND const & hwnd , int32_t const & uniqueId )
 {
 	this->hwnd = hwnd ; // for message
 

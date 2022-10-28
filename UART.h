@@ -53,6 +53,9 @@ public:
 	using umap = std::unordered_map< std::string , uint32_t > ;
 	umap baudRateMap ;
 
+private :
+	int32_t uniqueId = 0 ;
+
 private:
 	void SetBaudRateMap() ;
 
@@ -63,7 +66,7 @@ public:
 public:
 	void Close() ;
 	void CloseHandle() ;
-	bool Create( HWND hwnd ) ;
+	bool Create( HWND const & hwnd , int32_t const & uniqueId = 0 ) ;
 
 	bool IsOpen() ;
 	void Reset() ;
@@ -83,5 +86,7 @@ public:
 	int32_t Receive( uint8_t * pBuf , int32_t const & length ) ;
 	
 	std::string const & GetPort() const ;
+
+	int32_t const & GetUniqueId() const ;
 } ;
 

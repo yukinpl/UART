@@ -271,7 +271,7 @@ void UART::Reset()
 }
 
 
-bool UART::Send( uint8_t * pBuf , int32_t length )
+bool UART::Send( uint8_t const * pBuf , int32_t const & length )
 {
 	bool retVal = true ;
 
@@ -306,7 +306,7 @@ bool UART::Send( uint8_t * pBuf , int32_t length )
 }
 
 
-int32_t UART::Receive( uint8_t * pBuf , int32_t length )
+int32_t UART::Receive( uint8_t * pBuf , int32_t const & length )
 {
 	CSingleLock lockObj( ( CSyncObject * ) pEvent , FALSE ) ;
 

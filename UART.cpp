@@ -174,11 +174,15 @@ void UART::Clear()
 }
 
 
-bool UART::Create( HWND const & hwnd , int32_t const & uniqueId )
+bool UART::Create( HWND const & hwnd , int32_t const & _uniqueId )
 {
 	this->hwnd = hwnd ; // for message
 
 	CString czPort( port.c_str() ) ;
+	if( 4 < czPort.GetLength() )
+	{
+		czPort = _T( "\\\\.\\" ) + czPort ;
+	}
 
 	// open uart
 	handle = CreateFile(
@@ -193,6 +197,8 @@ bool UART::Create( HWND const & hwnd , int32_t const & uniqueId )
 	}
 
 	Reset() ;
+
+	uniqueId = _uniqueId ;
 
 	isOpen = true ;
 
